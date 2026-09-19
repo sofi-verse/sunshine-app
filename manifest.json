@@ -10,50 +10,10 @@
   "background_color": "#E7E7E7",
   "icons": [
     {
-      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><circle cx='96' cy='96' r='80' fill='%23DE0065'/><circle cx='96' cy='50' r='40' fill='%23DE0065'/><circle cx='137' cy='68' r='40' fill='%23DE0065'/><circle cx='127' cy='127' r='40' fill='%23DE0065'/><circle cx='65' cy='127' r='40' fill='%23DE0065'/><circle cx='55' cy='68' r='40' fill='%23DE0065'/><path d='M 85 88 Q 85 84 89 84 Q 93 84 93 88' stroke='white' stroke-width='2' fill='none' stroke-linecap='round'/><path d='M 99 88 Q 99 84 103 84 Q 107 84 107 88' stroke='white' stroke-width='2' fill='none' stroke-linecap='round'/><path d='M 90 100 Q 96 105 102 100' stroke='white' stroke-width='2' fill='none' stroke-linecap='round'/></svg>",
-      "sizes": "192x192",
+      "src": "icons/flower.svg",
+      "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any"
-    },
-    {
-      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><circle cx='96' cy='96' r='80' fill='%23DE0065'/><circle cx='96' cy='50' r='40' fill='%23DE0065'/><circle cx='137' cy='68' r='40' fill='%23DE0065'/><circle cx='127' cy='127' r='40' fill='%23DE0065'/><circle cx='65' cy='127' r='40' fill='%23DE0065'/><circle cx='55' cy='68' r='40' fill='%23DE0065'/><path d='M 85 88 Q 85 84 89 84 Q 93 84 93 88' stroke='white' stroke-width='2' fill='none' stroke-linecap='round'/><path d='M 99 88 Q 99 84 103 84 Q 107 84 107 88' stroke='white' stroke-width='2' fill='none' stroke-linecap='round'/><path d='M 90 100 Q 96 105 102 100' stroke='white' stroke-width='2' fill='none' stroke-linecap='round'/></svg>",
-      "sizes": "192x192",
-      "type": "image/svg+xml",
-      "purpose": "maskable"
-    }
-  ],
-  "screenshots": [
-    {
-      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 540 720'><rect fill='%23E7E7E7' width='540' height='720'/><circle cx='270' cy='200' r='80' fill='%23DE0065'/><text x='270' y='400' text-anchor='middle' font-size='48' fill='%23DE0065' font-family='Schoolbell'>¿Qué te hizo feliz hoy?</text></svg>",
-      "sizes": "540x720",
-      "type": "image/svg+xml",
-      "form_factor": "narrow"
-    }
-  ],
-  "shortcuts": [
-    {
-      "name": "Escribe un momento feliz",
-      "short_name": "Escribir",
-      "description": "Abre la app para escribir un nuevo momento feliz",
-      "url": "/?mode=input",
-      "icons": [
-        {
-          "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><circle cx='96' cy='96' r='80' fill='%23DE0065'/></svg>",
-          "sizes": "192x192"
-        }
-      ]
-    },
-    {
-      "name": "Lee una memoria al azar",
-      "short_name": "Shuffle",
-      "description": "Abre la app para leer una memoria al azar",
-      "url": "/?mode=shuffle",
-      "icons": [
-        {
-          "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><circle cx='96' cy='96' r='80' fill='%23DE0065'/></svg>",
-          "sizes": "192x192"
-        }
-      ]
     }
   ]
 }
