@@ -54,7 +54,7 @@
       align-items: center;
       opacity: 0;
       pointer-events: none;
-      transition: opacity 0.5s ease;
+      transition: opacity 0.8s ease;
       padding-top: env(safe-area-inset-top, 0px);
       padding-bottom: env(safe-area-inset-bottom, 0px);
     }
@@ -70,17 +70,13 @@
       text-align: center;
       padding-left: 24px;
       padding-right: 24px;
+      transition: opacity 0.45s ease;
     }
 
     .flower-container {
-      animation: float 2.4s ease-in-out 2;
+      animation: float 2.4s ease-in-out infinite;
       will-change: transform;
-    }
-
-    .flower-container.lift {
-      animation: none;
-      transform: translateY(-38vh) scale(0.5);
-      transition: transform 0.9s cubic-bezier(0.65, 0, 0.35, 1);
+      cursor: pointer;
     }
 
     @keyframes float {
@@ -94,18 +90,16 @@
       display: block;
     }
 
-    .home-copy {
-      transition: opacity 0.5s ease;
-    }
-
-    #homeScreen.leaving .home-copy {
-      opacity: 0;
-    }
-
     .welcome-text {
       font-size: clamp(32px, 9vw, 42px);
       line-height: 1.2;
       margin-top: 48px;
+    }
+
+    .tap-hint {
+      font-size: 16px;
+      color: var(--gray);
+      margin-top: 14px;
     }
 
     .tagline {
@@ -209,6 +203,7 @@
     /* Shuffle mode */
     .shuffle-title {
       font-size: clamp(20px, 5.5vw, 26px);
+      color: var(--gray);
       margin-bottom: 28px;
     }
 
@@ -227,20 +222,22 @@
     }
 
     /* ---------- Bottom controls ---------- */
+    /* fit-content sizes this column to the chip, its widest child, so the
+       action button above can stretch to exactly the same width. */
     .bottom-area {
       flex-shrink: 0;
       display: flex;
       flex-direction: column;
-      align-items: center;
+      align-items: stretch;
       gap: 14px;
-      width: 100%;
+      width: fit-content;
     }
 
     .action-btn {
       display: none;
       align-items: center;
       justify-content: center;
-      width: min(50vw, 190px);
+      width: 100%;
       height: 60px;
       border: 2px solid var(--pink);
       border-radius: 14px;
@@ -300,21 +297,6 @@
       display: block;
     }
 
-    /* Staggered reveal of the second screen */
-    #mainScreen.active .flower-top,
-    #mainScreen.active .center-area,
-    #mainScreen.active .bottom-area {
-      animation: rise 0.6s ease both;
-    }
-
-    #mainScreen.active .center-area { animation-delay: 0.12s; }
-    #mainScreen.active .bottom-area { animation-delay: 0.24s; }
-
-    @keyframes rise {
-      from { opacity: 0; transform: translateY(14px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after {
         animation-duration: 0.01ms !important;
@@ -326,11 +308,12 @@
 </head>
 <body>
   <div id="homeScreen" class="screen active">
-    <div class="flower-container" id="flowerContainer">
+    <div class="flower-container">
       <img src="icons/flower.svg" class="flower-svg" alt="">
     </div>
     <div class="home-copy">
       <div class="welcome-text">¿Qué te hizo feliz hoy?</div>
+      <div class="tap-hint">Toca para iniciar</div>
       <div class="tagline">Esta app fue hecha con amor para ayudarte a encontrar la luz en los días que se ven oscuros.</div>
     </div>
   </div>
@@ -346,7 +329,7 @@
       </div>
 
       <div id="shuffleMode" class="mode">
-        <div class="shuffle-title">Random memory</div>
+        <div class="shuffle-title">Un recuerdo feliz</div>
         <div class="memory-display" id="memoryDisplay"></div>
       </div>
     </div>
@@ -378,7 +361,6 @@
 
     const homeScreen = document.getElementById('homeScreen');
     const mainScreen = document.getElementById('mainScreen');
-    const flowerContainer = document.getElementById('flowerContainer');
     const inputMode = document.getElementById('inputMode');
     const shuffleMode = document.getElementById('shuffleMode');
     const entryText = document.getElementById('entryText');
@@ -452,13 +434,8 @@
     }
 
     function goToMain() {
-      homeScreen.classList.add('leaving');
-      flowerContainer.classList.add('lift');
-
-      setTimeout(() => {
-        homeScreen.classList.remove('active');
-        mainScreen.classList.add('active');
-      }, 700);
+      homeScreen.classList.remove('active');
+      setTimeout(() => mainScreen.classList.add('active'), 450);
     }
 
     memoryInput.addEventListener('input', renderEntry);
@@ -476,11 +453,10 @@
     heartBtn.addEventListener('click', () => switchMode('input'));
     shuffleNavBtn.addEventListener('click', () => switchMode('shuffle'));
 
+    homeScreen.addEventListener('click', goToMain, { once: true });
+
     loadMemories();
     renderEntry();
-
-    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    setTimeout(goToMain, reducedMotion ? 600 : 4800);
 
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('sw.js').catch(() => {});
