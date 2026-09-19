@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="description" content="Sunshine App - Un diario para tus momentos felices">
+  <meta name="theme-color" content="#DE0065">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Sunshine">
+
+  <title>Sunshine App</title>
+
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><circle cx='96' cy='96' r='80' fill='%23DE0065'/></svg>">
+  <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><circle cx='96' cy='96' r='80' fill='%23DE0065'/></svg>">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Schoolbell&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      font-family: 'Schoolbell', cursive;
+      background-color: #E7E7E7;
+      color: #DE0065;
+      -webkit-user-select: none;
+      user-select: none;
+      -webkit-touch-callout: none;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Screens */
+    .screen {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+    }
+
+    .screen.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* Home Screen */
+    #homeScreen {
+      padding: 40px 20px;
+      text-align: center;
+    }
+
+    .flower-container {
+      margin-bottom: 60px;
+      cursor: pointer;
+      transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .flower-svg {
+      width: 180px;
+      height: 180px;
+    }
+
+    .welcome-text {
+      font-size: 36px;
+      margin-bottom: 40px;
+      line-height: 1.3;
+      color: #DE0065;
+    }
+
+    .tagline {
+      font-size: 14px;
+      color: #9D9D9D;
+      line-height: 1.4;
+      max-width: 280px;
+      margin: 0 auto;
+    }
+
+    /* Main Screen */
+    #mainScreen {
+      padding: 20px;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .flower-small-container {
+      margin-top: 20px;
+      margin-bottom: 30px;
+      flex-shrink: 0;
+    }
+
+    .flower-svg-small {
+      width: 100px;
+      height: 100px;
+    }
+
+    .content-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding-bottom: 20px;
+    }
+
+    .placeholder-text {
+      font-size: 18px;
+      color: #9D9D9D;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    /* Input Mode */
+    #inputMode {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+    }
+
+    .memory-input {
+      width: 100%;
+      min-height: 120px;
+      padding: 20px;
+      border: 2px solid #DE0065;
+      border-radius: 12px;
+      background-color: white;
+      font-family: 'Schoolbell', cursive;
+      font-size: 16px;
+      color: #DE0065;
+      resize: none;
+      margin-bottom: 20px;
+    }
+
+    .memory-input::placeholder {
+      color: #9D9D9D;
+    }
+
+    .memory-input:focus {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(222, 0, 101, 0.1);
+    }
+
+    .button-group {
+      display: flex;
+      gap: 10px;
+      width: 100%;
+    }
+
+    .save-btn {
+      flex: 1;
+      padding: 15px;
+      border: 2px solid #DE0065;
+      border-radius: 12px;
+      background-color: white;
+      color: #DE0065;
+      font-family: 'Schoolbell', cursive;
+      font-size: 24px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .save-btn:active {
+      transform: scale(0.95);
+      background-color: #F6BCD6;
+    }
+
+    /* Shuffle Mode */
+    #shuffleMode {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+    }
+
+    .shuffle-title {
+      font-size: 24px;
+      color: #DE0065;
+      margin-bottom: 30px;
+    }
+
+    .memory-display {
+      width: 100%;
+      min-height: 120px;
+      padding: 20px;
+      background-color: white;
+      border-radius: 12px;
+      text-align: center;
+      margin-bottom: 20px;
+      color: #DE0065;
+      font-size: 16px;
+      line-height: 1.6;
+      overflow-y: auto;
+      max-height: 200px;
+    }
+
+    .no-memories {
+      font-size: 18px;
+      color: #9D9D9D;
+      text-align: center;
+    }
+
+    .shuffle-btn {
+      width: 100%;
+      padding: 15px;
+      border: 2px solid #DE0065;
+      border-radius: 12px;
+      background-color: white;
+      color: #DE0065;
+      font-family: 'Schoolbell', cursive;
+      font-size: 28px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      margin-bottom: 20px;
+    }
+
+    .shuffle-btn:active {
+      transform: scale(0.95);
+      background-color: #F6BCD6;
+    }
+
+    /* Navigation Chip */
+    .nav-chip {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 12px;
+      background-color: #F6BCD6;
+      padding: 12px 16px;
+      border-radius: 50px;
+      align-items: center;
+      z-index: 100;
+    }
+
+    .nav-btn {
+      width: 50px;
+      height: 50px;
+      border: none;
+      background-color: transparent;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+      border-radius: 50%;
+    }
+
+    .nav-btn.inactive {
+      opacity: 0.5;
+    }
+
+    .nav-btn:active {
+      transform: scale(0.9);
+    }
+
+    .icon-svg {
+      width: 28px;
+      height: 28px;
+    }
+
+    /* Responsive */
+    @media (max-width: 480px) {
+      .welcome-text {
+        font-size: 32px;
+      }
+
+      .flower-svg {
+        width: 150px;
+        height: 150px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        animation: none !important;
+        transition: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Home Screen -->
+  <div id="homeScreen" class="screen active">
+    <div class="flower-container">
+      <svg class="flower-svg" viewBox="0 0 192 192" xmlns="http://www.w3.org/2000/svg">
+        <!-- Top petal -->
+        <circle cx="96" cy="50" r="40" fill="#DE0065"/>
+        <!-- Right-top petal -->
+        <circle cx="137" cy="68" r="40" fill="#DE0065"/>
+        <!-- Right-bottom petal -->
+        <circle cx="127" cy="127" r="40" fill="#DE0065"/>
+        <!-- Left-bottom petal -->
+        <circle cx="65" cy="127" r="40" fill="#DE0065"/>
+        <!-- Left-top petal -->
+        <circle cx="55" cy="68" r="40" fill="#DE0065"/>
+        <!-- Center -->
+        <circle cx="96" cy="96" r="35" fill="#DE0065"/>
+        <!-- Face -->
+        <path d="M 85 88 Q 85 84 89 84 Q 93 84 93 88" stroke="white" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <path d="M 99 88 Q 99 84 103 84 Q 107 84 107 88" stroke="white" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <path d="M 90 100 Q 96 105 102 100" stroke="white" stroke-width="2" fill="none" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <div class="welcome-text">¿Qué te hizo feliz hoy?</div>
+    <div class="tagline">Esta app fue hecha con amor para ayudarte a encontrar la luz en los días que se ven oscuros.</div>
+  </div>
+
+  <!-- Main Screen -->
+  <div id="mainScreen" class="screen">
+    <div class="flower-small-container">
+      <svg class="flower-svg-small" viewBox="0 0 192 192" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="96" cy="50" r="40" fill="#DE0065"/>
+        <circle cx="137" cy="68" r="40" fill="#DE0065"/>
+        <circle cx="127" cy="127" r="40" fill="#DE0065"/>
+        <circle cx="65" cy="127" r="40" fill="#DE0065"/>
+        <circle cx="55" cy="68" r="40" fill="#DE0065"/>
+        <circle cx="96" cy="96" r="35" fill="#DE0065"/>
+        <path d="M 85 88 Q 85 84 89 84 Q 93 84 93 88" stroke="white" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <path d="M 99 88 Q 99 84 103 84 Q 107 84 107 88" stroke="white" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <path d="M 90 100 Q 96 105 102 100" stroke="white" stroke-width="2" fill="none" stroke-linecap="round"/>
+      </svg>
+    </div>
+
+    <div class="content-area">
+      <!-- Input Mode -->
+      <div id="inputMode" style="display: none;">
+        <div class="placeholder-text">¿Qué te hizo feliz hoy?</div>
+        <textarea class="memory-input" id="memoryInput" placeholder="Escribe tu momento feliz aquí..."></textarea>
+        <div class="button-group">
+          <button class="save-btn" id="saveBtn">+</button>
+        </div>
+      </div>
+
+      <!-- Shuffle Mode -->
+      <div id="shuffleMode" style="display: none;">
+        <div class="shuffle-title">Random memory</div>
+        <div class="memory-display" id="memoryDisplay"></div>
+        <button class="shuffle-btn" id="shuffleBtn">⇄</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Navigation Chip -->
+  <div class="nav-chip">
+    <button class="nav-btn" id="heartBtn" data-mode="input">
+      <svg class="icon-svg" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="#DE0065"/>
+      </svg>
+    </button>
+    <button class="nav-btn inactive" id="shuffleBtn" data-mode="shuffle">
+      <svg class="icon-svg" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M10 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h5v2h2V1h-2v2zm0 2v10h-5V5h5zm9 9h-5v2h5v-5h2V1h-2v9zm0-7v2h-5V5h5z" fill="#DE0065" transform="rotate(90 12 12)"/>
+      </svg>
+    </button>
+  </div>
+
+  <script>
+    // State management
+    const state = {
+      currentMode: 'input',
+      memories: [],
+      currentMemoryIndex: 0
+    };
+
+    // DOM Elements
+    const homeScreen = document.getElementById('homeScreen');
+    const mainScreen = document.getElementById('mainScreen');
+    const flowerContainer = document.querySelector('.flower-container');
+    const inputMode = document.getElementById('inputMode');
+    const shuffleMode = document.getElementById('shuffleMode');
+    const memoryInput = document.getElementById('memoryInput');
+    const saveBtn = document.getElementById('saveBtn');
+    const shuffleBtn = document.getElementById('shuffleBtn');
+    const memoryDisplay = document.getElementById('memoryDisplay');
+    const heartBtn = document.getElementById('heartBtn');
+    const shuffleNavBtn = document.getElementById('shuffleBtn');
+    const navChip = document.querySelector('.nav-chip');
+
+    // Initialize
+    function init() {
+      loadMemories();
+      attachEventListeners();
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('sw.js').catch(() => {});
+      }
+    }
+
+    // Load memories from localStorage
+    function loadMemories() {
+      const stored = localStorage.getItem('sunshineMemories');
+      state.memories = stored ? JSON.parse(stored) : [];
+    }
+
+    // Save memories to localStorage
+    function saveMemories() {
+      localStorage.setItem('sunshineMemories', JSON.stringify(state.memories));
+    }
+
+    // Event listeners
+    function attachEventListeners() {
+      // Home to main transition
+      flowerContainer.addEventListener('click', transitionToMain);
+
+      // Save memory
+      saveBtn.addEventListener('click', () => {
+        const text = memoryInput.value.trim();
+        if (text) {
+          state.memories.push({
+            text,
+            date: new Date().toISOString()
+          });
+          saveMemories();
+          memoryInput.value = '';
+          memoryInput.focus();
+        }
+      });
+
+      // Navigation
+      heartBtn.addEventListener('click', () => switchMode('input'));
+      shuffleNavBtn.addEventListener('click', () => switchMode('shuffle'));
+
+      // Shuffle button in shuffle mode
+      const shuffleBtnInMode = document.querySelector('#shuffleMode .shuffle-btn');
+      if (shuffleBtnInMode) {
+        shuffleBtnInMode.addEventListener('click', showRandomMemory);
+      }
+
+      // Allow Enter to save
+      memoryInput.addEventListener('keydown', (e) => {
+        if (e.ctrlKey && e.key === 'Enter') {
+          saveBtn.click();
+        }
+      });
+    }
+
+    // Transition from home to main
+    function transitionToMain() {
+      homeScreen.classList.remove('active');
+      mainScreen.classList.add('active');
+
+      // Animate flower
+      const container = document.querySelector('#homeScreen .flower-container');
+      container.style.opacity = '0';
+      container.style.transform = 'translateY(-100px) scale(0.5)';
+
+      setTimeout(() => {
+        switchMode('input');
+        memoryInput.focus();
+      }, 300);
+    }
+
+    // Switch between input and shuffle modes
+    function switchMode(mode) {
+      state.currentMode = mode;
+
+      if (mode === 'input') {
+        inputMode.style.display = 'flex';
+        shuffleMode.style.display = 'none';
+        heartBtn.classList.remove('inactive');
+        shuffleNavBtn.classList.add('inactive');
+      } else {
+        inputMode.style.display = 'none';
+        shuffleMode.style.display = 'flex';
+        heartBtn.classList.add('inactive');
+        shuffleNavBtn.classList.remove('inactive');
+        showRandomMemory();
+      }
+    }
+
+    // Show random memory or no-memories message
+    function showRandomMemory() {
+      if (state.memories.length === 0) {
+        memoryDisplay.innerHTML = '<div class="no-memories">No hay memorias aún. ¡Escribe tu primer momento feliz!</div>';
+        return;
+      }
+
+      state.currentMemoryIndex = Math.floor(Math.random() * state.memories.length);
+      const memory = state.memories[state.currentMemoryIndex];
+      memoryDisplay.innerHTML = memory.text;
+    }
+
+    // Initialize app
+    init();
+  </script>
+</body>
+</html>
